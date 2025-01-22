@@ -14,9 +14,13 @@ import com.otm.repository.CustomerRepository;
 public class MyRunner implements CommandLineRunner {
 	@Autowired
     CustomerRepository custrepo;
+    @Autowired
+	LoanRepository loanRepo;
+
 	@Override
-	public void run(String... args) throws Exception {
-      Customer c=new Customer();
+    @Transactional
+	 public void run(String... args) throws Exception {
+   /*    Customer c=new Customer();
       c.setCustomerName("Durga");
       Loan personal=new Loan();
       personal.setLoanId("LN_P191");
@@ -32,8 +36,34 @@ public class MyRunner implements CommandLineRunner {
       loans.add(home);
       c.setLoans(loans);
       custrepo.save(c);
+      */
       
-      
+      // to add loan
+	/*	Loan vehicle=new Loan();
+		vehicle.setLoanId("LN_V365");
+		vehicle.setLoanType("VEHICLE");
+		vehicle.setAmount(100000.00);
+		Customer customer=custrepo.findById(1).get();
+		Set<Loan>loans=customer.getLoans();
+	    loans.add(vehicle);
+	*/     
+	  // to delete loan
+		Loan loan=loanRepo.findById("LN_V365").get();
+		Customer customer=custrepo.findById(1).get();
+		Set<Loan>loans=customer.getLoans();
+	    Iterator<Loan>iterator=loans.iterator();
+	    while(iterator.hasNext())
+	    {
+	    	Loan ln=iterator.next();
+	    	if(ln.getLoanId().equals(loan.getLoanId()))
+	    	{
+	    		iterator.remove();
+	    	}
+	    }
+		// this is showing in db null now so it is orphan record
+	    // previously it is showing 1
+	    // if we want to delete entire then in customer class after eager feching add orphanRemoval=true   
+	    
 	}
 
 }
